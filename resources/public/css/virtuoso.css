@@ -45,6 +45,12 @@
   --spinner-color-1: var(--aqua);
   --spinner-color-2: var(--bleu-curieux);
   --spinner-color-3: var(--bleu-violet);
+
+  --button-color: var(--bleu-curieux);
+  --button-highlight-color: var(--bleu-curieux);
+  --button-engage-color: var(--bleu-violet);
+  --button-fg: #ffffff;
+  --button-spinner-color: #ffffff;
 }
 
 html,
@@ -127,4 +133,58 @@ a.inverted:visited,
   animation: 4.84s linear 0s infinite normal none running dash-anim;
   transition: stroke-dasharray 2000ms ease 0s, stroke 600ms ease 0s;
   transform-origin: center center;
+}
+
+/* Buttons */
+
+.button,
+.button:link,
+.button:visited {
+  --spinner-color-1: var(--button-spinner-color);
+  --spinner-color-2: var(--button-spinner-color);
+  --spinner-color-3: var(--button-spinner-color);
+  background: var(--button-color);
+  border: 3px solid var(--button-color);
+  color: var(--button-fg);
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  justify-content: center;
+  align-items: center;
+  font-weight: normal;
+  padding: 13px 17px;
+  position: relative;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+  width: 100%;
+}
+
+.button:active,
+.button:link:active,
+.button:hover:active,
+.button:visited:active {
+  background: var(--button-engage-color);
+  border-color: var(--button-engage-color);
+}
+
+.button .spinner {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -16px;
+}
+
+.button:hover,
+a.button:hover {
+  background: var(--button-highlight-color);
+  border-color: var(--button-highlight-color);
+  text-decoration: none;
+}
+
+.button.button-disabled,
+.button.button-disabled:hover {
+  background: var(--button-color);
+  opacity: 0.5;
+  cursor: default;
 }
