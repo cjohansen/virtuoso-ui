@@ -51,6 +51,12 @@
   --button-engage-color: var(--bleu-violet);
   --button-fg: #ffffff;
   --button-spinner-color: #ffffff;
+
+  --input-bg: var(--cod-gris);
+  --input-fg: var(--silver-chalice);
+  --input-focus-fg: var(--mercury);
+  --input-focus-outline: var(--aqua);
+  --input-placeholder: var(--scorpion);
 }
 
 html,
@@ -188,3 +194,26 @@ a.button:hover {
   opacity: 0.5;
   cursor: default;
 }
+
+/* Input fields */
+.input {
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid currentColor;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 12px;
+  border-radius: 4px;
+  transition: color 0.1s;
+  width: 100%;
+}
+
+.input:focus {
+  color: var(--input-focus-fg);
+  outline: 1px solid var(--input-focus-outline);
+}
+
+.input::placeholder {
+  color: var(--input-placeholder);
+}
+

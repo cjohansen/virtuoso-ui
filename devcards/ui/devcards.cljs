@@ -1,6 +1,7 @@
 (ns ^:figwheel-hooks ui.devcards
   (:require [devcards.core :as devcards]
             [ui.components.button-cards]
+            [ui.components.input-cards]
             [ui.components.spinner-cards]))
 
 (enable-console-print!)
