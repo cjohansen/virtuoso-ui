@@ -1,0 +1,130 @@
+@import url(fonts.css);
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+:root {
+  --woodsmoke: #18181a;
+  --cod-gris: #1a1a1a;
+  --mine-shaft: #282828;
+  --mine-shaft-light: #303030;
+  --mercury: #e6e6e6;
+
+  --puits-de-mine: #1c1c1c;
+  --morue-grise: #121212;
+  --aqua: #22e1ff;
+  --bleu-curieux: #1d8fe1;
+  --bleu-violet: #625eb1;
+  --blanc: #fff;
+
+  /* ... */
+  --imperial: #552a6a;
+  --amaranth: #e83369;
+  --brick-rojo: #cd2d5d;
+  --mexican-rojo: #992245;
+  --west-side: #ff8f0f;
+  --deep-lemon: #ffca1c;
+  --dandelion: #ffda61;
+  --lima: #54cc2c;
+  --wafer: #dfcec2;
+  --flint: #736e69;
+  --cloud-burst: #1e2f4e;
+  --cinnabar: #e54d42;
+  --blizzard: #b7e6f2;
+  --curious-azul: #3a99d9;
+  --fun-azul: #1369a3;
+  --scorpion: #606060;
+  --silver-chalice: #a6a6a6;
+  /* ... */
+
+  --fg: var(--blanc);
+  --bg: var(--puits-de-mine);
+  --spinner-color-1: var(--aqua);
+  --spinner-color-2: var(--bleu-curieux);
+  --spinner-color-3: var(--bleu-violet);
+}
+
+html,
+body {
+  background: var(--bg);
+  background-image: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 48%, var(--bleu-violet) 100%);
+  color: var(--fg);
+  font-size: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-family: 'Work Sans', helvetica, arial, sans-serif;
+  font-stretch: normal;
+  letter-spacing: normal;
+  line-height: 1.33;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.gradient-bg {
+  background-image: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 38%, var(--bleu-violet) 100%);
+}
+
+a,
+a:link,
+a:visited,
+.link {
+  color: var(--link-color);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a:hover,
+a:link:hover,
+a:visited:hover,
+a.inverted,
+a.inverted:link,
+a.inverted:visited,
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Spinner */
+
+@-webkit-keyframes dash-anim {
+  0% {stroke-dashoffset: 200;}
+  50% {stroke-dashoffset: 0; -webkit-transform:rotate(0deg);}
+  100% {stroke-dashoffset: 200; -webkit-transform:rotate(360deg);}
+}
+
+@keyframes dash-anim {
+  0% {stroke-dashoffset: 200;}
+  50% {stroke-dashoffset: 0; transform:rotate(0deg);}
+  100% {stroke-dashoffset: 200; transform:rotate(360deg);}
+}
+
+@-webkit-keyframes rotate-anim {
+  0% {-webkit-transform: rotate(0deg);}
+  100% {-webkit-transform: rotate(360deg);}
+}
+
+@keyframes rotate-anim {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+
+.spinner {
+  --spinner-track: rgba(0, 0, 0, 0.1);
+  --spinner-line-1: var(--spinner-color-1);
+  --spinner-line-2: var(--spinner-color-2);
+  --spinner-line-3: var(--spinner-color-3);
+}
+
+.spinner-inner {
+  animation: 2.2s linear 0s infinite normal none running rotate-anim;
+  transform-origin: center center;
+}
+
+.spinner-circle {
+  animation: 4.84s linear 0s infinite normal none running dash-anim;
+  transition: stroke-dasharray 2000ms ease 0s, stroke 600ms ease 0s;
+  transform-origin: center center;
+}

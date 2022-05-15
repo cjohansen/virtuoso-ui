@@ -1,0 +1,24 @@
+.cljs-logo {display:none !important;}
+
+body .com-rigsomelight-devcards-card-base,
+body .com-rigsomelight-devcards-card-base-no-pad {
+  background: transparent;
+  color: var(--mercury);
+  border-color: var(--woodsmoke);
+}
+
+body .com-rigsomelight-devcards-panel-heading {background: var(--mine-shaft);}
+body .com-rigsomelight-devcards-badge {background: var(--woodsmoke);}
+body .com-rigsomelight-devcards-list-group-item {border-color: var(--woodsmoke);}
+html, body, body .com-rigsomelight-devcards-breadcrumbs {background: var(--mine-shaft-light);}
+body .com-rigsomelight-devcards-typog a {color: var(--curious-azul);}
+
+body .com-rigsomelight-devcards-container {width: auto;}
+
+#com-rigsomelight-devcards-main {
+  padding-top: 0px;
+}
+
+@media (min-width: 768px) {
+  div.com-rigsomelight-devcards-container {margin: 0 40px;}
+}

@@ -1,0 +1,13 @@
+^{:watch-dirs ["src" "devcards"]
+  :extra-main-files {:devcards {:main ui.devcards}}
+  :ring-server-options {:port 9701}
+  :css-dirs ["dev-resources/public/css"
+             "resources/public/css"]}
+{:main virtuoso.core
+ :optimizations :none
+ :pretty-print true
+ :source-map true
+ :devcards true
+ :asset-path "/js/compiled/out"
+ :output-to "dev-resources/public/js/compiled/app.js"
+ :output-dir "dev-resources/public/js/compiled/out"}

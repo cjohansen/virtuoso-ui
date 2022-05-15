@@ -1,0 +1,4 @@
+figwheel-main.edn
+dev-resources/public/js/
+/.cpcache/
+/.nrepl-port
