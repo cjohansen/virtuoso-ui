@@ -2,7 +2,8 @@
   (:require [devcards.core :as devcards]
             [ui.components.button-cards]
             [ui.components.input-cards]
-            [ui.components.spinner-cards]))
+            [ui.components.spinner-cards]
+            [ui.components.timer-cards]))
 
 (enable-console-print!)
 

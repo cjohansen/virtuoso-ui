@@ -217,3 +217,40 @@ a.button:hover {
   color: var(--input-placeholder);
 }
 
+/* Timer */
+.timer-time {
+  font-size: 3rem;
+}
+
+.timer-time {
+  display: flex;
+  justify-content: center;
+}
+
+.timer-minutes, .timer-seconds {
+  flex: 50% 1 0;
+}
+
+.timer-minutes {
+  text-align: right;
+}
+
+.timer-separator {
+  flex-grow: 0;
+  opacity: 1;
+  transition-timing-function: ease-in;
+}
+
+.timer-progress-track,
+.timer-progress-line {
+  background: var(--timer-progress-track);
+  border-radius: 6px;
+  height: 6px;
+}
+
+.timer-progress-line {
+  background-image: var(--default-gradient);
+  transition: width 1s;
+  transition-timing-function: linear;
+}
+
