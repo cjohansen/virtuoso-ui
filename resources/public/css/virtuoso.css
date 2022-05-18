@@ -250,7 +250,6 @@ a.button:hover {
 
 .timer-progress-line {
   background-image: var(--default-gradient);
-  transition: width 1s;
-  transition-timing-function: linear;
+  transition: width 1s linear;
 }
 
