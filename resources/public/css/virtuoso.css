@@ -42,9 +42,7 @@
 
   --fg: var(--blanc);
   --bg: var(--puits-de-mine);
-  --spinner-color-1: var(--aqua);
-  --spinner-color-2: var(--bleu-curieux);
-  --spinner-color-3: var(--bleu-violet);
+  --default-gradient: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 48%, var(--bleu-violet) 100%);
 
   --button-color: var(--bleu-curieux);
   --button-highlight-color: var(--bleu-curieux);
@@ -57,12 +55,18 @@
   --input-focus-fg: var(--mercury);
   --input-focus-outline: var(--aqua);
   --input-placeholder: var(--scorpion);
+
+  --spinner-color-1: var(--aqua);
+  --spinner-color-2: var(--bleu-curieux);
+  --spinner-color-3: var(--bleu-violet);
+
+  --timer-progress-track: var(--mine-shaft);
 }
 
 html,
 body {
   background: var(--bg);
-  background-image: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 48%, var(--bleu-violet) 100%);
+  background-image: var(--default-gradient);
   color: var(--fg);
   font-size: 20px;
   font-weight: normal;
@@ -74,10 +78,6 @@ body {
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-
-.gradient-bg {
-  background-image: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 38%, var(--bleu-violet) 100%);
 }
 
 a,
