@@ -16,7 +16,9 @@
          {:included true}))
 
   (is (= (sut/parse-query-params "included=false")
-         {:included false})))
+         {:included false}))
+
+  (is (nil? (sut/parse-query-params ""))))
 
 (deftest encode-query-params-test
   (is (= (sut/parse-query-params "haha=lol&yep&something=one%20two%20three&other=one%20two")

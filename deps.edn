@@ -1,7 +1,8 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/clojurescript {:mvn/version "1.10.893"}
-        cjohansen/dumdom {:mvn/version "2022.02.03"}}
+        cjohansen/dumdom {:mvn/version "2022.04.12"}
+        com.taoensso/timbre {:mvn/version "5.1.2"}}
  :aliases
  {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}
                      cider/piggieback {:mvn/version "0.5.3"}
