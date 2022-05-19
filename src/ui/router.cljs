@@ -2,6 +2,15 @@
   "Parse URLs, query params and match them against routes"
   (:require [clojure.string :as str]))
 
+(defn parse-qs-val [v]
+  (let [v (js/decodeURIComponent v)]
+    (cond
+      (re-find #"^\d+$" v) (js/parseInt v 10)
+      (re-find #"^\d+\.\d+$" v) (js/parseFloat v)
+      (= "true" v) true
+      (= "false" v) false
+      :else v)))
+
 (defn parse-query-params
   "Parse a query string into a map with keyword keys. Query params that have no
   value (e.g. `...&key&other-key`) will be parsed with `true` as the value."
@@ -10,7 +19,7 @@
        (map (fn [s]
               (if (re-find #"=" s)
                 (let [[k & v] (str/split s #"=")]
-                  [(keyword k) (js/decodeURIComponent (str/join "=" v))])
+                  [(keyword k) (parse-qs-val (str/join "=" v))])
                 [(keyword s) true])))
        (into {})))
 

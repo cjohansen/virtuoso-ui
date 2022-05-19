@@ -4,7 +4,19 @@
 
 (deftest parse-query-params-test
   (is (= (sut/parse-query-params "haha=lol&yep&something=one two three&other=one%20two")
-         {:haha "lol", :yep true, :something "one two three", :other "one two"})))
+         {:haha "lol", :yep true, :something "one two three", :other "one two"}))
+
+  (is (= (sut/parse-query-params "items=32")
+         {:items 32}))
+
+  (is (= (sut/parse-query-params "sum=32.2")
+         {:sum 32.2}))
+
+  (is (= (sut/parse-query-params "included=true")
+         {:included true}))
+
+  (is (= (sut/parse-query-params "included=false")
+         {:included false})))
 
 (deftest encode-query-params-test
   (is (= (sut/parse-query-params "haha=lol&yep&something=one%20two%20three&other=one%20two")
