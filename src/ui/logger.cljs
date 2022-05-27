@@ -3,6 +3,20 @@
             [clojure.string :as str]
             [taoensso.timbre :as log]))
 
+(defn split-log-vargs [vargs]
+  (let [one-line? (some #{:ui.logger/one-line} vargs)
+        vargs (remove #{:ui.logger/one-line} vargs)
+        ss (take-while string? vargs)]
+    (if (seq ss)
+      {:messages ss
+       :data-args (drop-while string? vargs)
+       :section-separator "\n"
+       :data-separator (if one-line? " " "\n")}
+      {:messages (take-while keyword? vargs)
+       :data-args (drop-while keyword? vargs)
+       :section-separator (if one-line? " " "\n")
+       :data-separator (if one-line? " " "\n")})))
+
 (defn configure-logging []
   (log/merge-config!
    {:min-level :debug
@@ -11,20 +25,20 @@
      {:enabled? true
       :min-level :debug
       :output-fn (fn [data]
-                   (str
-                    (->> (concat
-                          [(second (str/split (.toISOString (:instant data)) #"T"))
-                           (str/upper-case (name (:level data)))
-                           (str "[" (:?ns-str data) ":" (:?line data) "]")
-                           "-"]
-                          (take-while string? (:vargs data)))
-                         (str/join " "))
-                    (when-let [args (->> (:vargs data)
-                                         (drop-while string?)
-                                         (map (fn [d]
-                                                (with-out-str (pprint/pprint d))))
-                                         seq)]
-                      (str "\n" (str/join "\n" args)))))
+                   (let [{:keys [messages data-args section-separator data-separator]}
+                         (split-log-vargs (:vargs data))]
+                     (str
+                      (->> (concat
+                            [(second (str/split (.toISOString (:instant data)) #"T"))
+                             (str/upper-case (name (:level data)))
+                             (str "[" (:?ns-str data) ":" (:?line data) "]")]
+                            messages)
+                           (str/join " "))
+                      (when-let [args (->> data-args
+                                           (map (fn [d]
+                                                  (str/trim (with-out-str (pprint/pprint d)))))
+                                           seq)]
+                        (str section-separator (str/join data-separator args))))))
       :fn #(if (:level %)
              (let [output-fn (:output-fn %)
                    formatted (output-fn %)
