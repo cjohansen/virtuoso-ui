@@ -4,5 +4,5 @@
 
 (defn register-actions [store event-bus]
   (let [subs (partial bus/subscribe event-bus ::action)]
-    (subs :action/assoc-in #(apply swap! store misc/assoc-in* %))
-    (subs :action/dissoc-in #(apply swap! store misc/dissoc-in* %))))
+    (subs :actions/assoc-in #(apply swap! store misc/assoc-in* %&))
+    (subs :actions/dissoc-in #(apply swap! store misc/dissoc-in* %&))))

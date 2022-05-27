@@ -63,7 +63,19 @@
       0 (log/debug :ui.logger/one-line topic)
       (log/debug :ui.logger/one-line topic args))))
 
-(defn bootup [{:keys [store element event-bus pages] :as app}]
+(defn main
+  "main supports the bootup process. It performs all the bootup tasks that can
+  safely be repeated (and that needs to be repeated when code changes). This
+  function can be safely called from a reload hook in your development setup."
+  [{:keys [store event-bus pages]}]
+  (actions/register-actions store event-bus)
+  (doseq [register-actions (keep :register-actions (vals @pages))]
+    (register-actions store event-bus)))
+
+(defn bootup
+  "Perform one-time configuration of app resources and add listeners in
+  appropriate places to get the app running"
+  [{:keys [store element event-bus pages] :as app}]
   (let [config (:config @store)]
     (logger/configure-logging)
     (log/info "Starting app with config" config)
@@ -86,7 +98,6 @@
     (add-watch store ::render (fn [_ _ _ state]
                                 (page/render-current-location app state)))
 
-    (actions/register-actions store event-bus)
+    (main app)
 
-    (go-to-current-location element @pages store)
-    ))
+    (go-to-current-location element @pages store)))

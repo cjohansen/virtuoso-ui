@@ -1,7 +1,6 @@
 (ns ^:figwheel-hooks virtuoso.dev
   (:require [dumdom.component]
             [gadget.inspector :as inspector]
-            [ui.actions :as actions]
             [ui.app :as app]
             [ui.event-bus :as bus]
             [virtuoso.i18n :as i18n]
@@ -24,6 +23,14 @@
     (inspector/inspect "Page data" page-data))
   (component data))
 
+(def app
+  {:store store
+   :dictionaries dictionaries
+   :element (js/document.getElementById "app")
+   :pages pages
+   :event-bus event-bus
+   :render-component #'render-component})
+
 (defonce started
   (do
     (set! dumdom.component/*render-comments?* true)
@@ -34,16 +41,10 @@
     (add-watch store ::dev (fn [_ _ _ state]
                              (when-let [location (:current-location state)]
                                (inspector/inspect "Location" location))))
-    (virtuoso/bootup
-     {:store store
-      :dictionaries dictionaries
-      :element (js/document.getElementById "app")
-      :pages pages
-      :event-bus event-bus
-      :render-component #'render-component})))
+    (virtuoso/bootup app)))
 
 (defn ^:after-load refresh []
   (reset! dictionaries (i18n/init-dictionaries))
   (reset! pages (virtuoso/get-pages-map))
   (swap! store assoc ::reloaded-at (.getTime (js/Date.)))
-  (actions/register-actions store event-bus))
+  (app/main app))
