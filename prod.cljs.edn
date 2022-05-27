@@ -1,0 +1,5 @@
+{:main virtuoso.core
+ :optimizations :advanced
+ :asset-path "/js/compiled/out"
+ :output-to "../target/public/js/compiled/app.js"
+ :output-dir "../target/public/js/compiled/out"}

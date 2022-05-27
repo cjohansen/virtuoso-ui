@@ -1,2 +1,3 @@
-{:log-event-bus-messages? true
- :api-host ""}
+{:api-host ""
+ :log-event-bus-messages? true
+ :site-title "Virtuoso"}

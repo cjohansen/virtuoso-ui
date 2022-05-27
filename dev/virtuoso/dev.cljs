@@ -3,16 +3,12 @@
             [gadget.inspector :as inspector]
             [ui.event-bus :as bus]
             [virtuoso.i18n :as i18n]
-            [virtuoso.core :as virtuoso]
-            [virtuoso.pages :as pages])
+            [virtuoso.core :as virtuoso])
   (:require-macros [ui.config.dev :as config]))
 
-(set! dumdom.component/*render-comments?* true)
-(set! dumdom.component/*render-eagerly?* true)
-
 (defonce store (atom {:config (config/load-config)}))
-(defonce event-bus (atom (bus/create-event-bus)))
-(defonce pages (atom (virtuoso/get-pages-map pages/pages)))
+(defonce event-bus (bus/create-event-bus))
+(defonce pages (atom (virtuoso/get-pages-map)))
 (defonce dictionaries (atom (i18n/init-dictionaries)))
 
 (defn get-inspector-data [page-data]
@@ -28,8 +24,14 @@
 
 (defonce started
   (do
+    (set! dumdom.component/*render-comments?* true)
+    (set! dumdom.component/*render-eagerly?* true)
+    (set! *print-namespace-maps* false)
     (inspector/inspect "Store" store)
     (inspector/inspect "Dictionaries" dictionaries)
+    (add-watch store ::dev (fn [_ _ _ state]
+                             (when-let [location (:current-location state)]
+                               (inspector/inspect "Location" location))))
     (virtuoso/bootup
      {:store store
       :dictionaries dictionaries
@@ -40,9 +42,5 @@
 
 (defn ^:after-load refresh []
   (reset! dictionaries (i18n/init-dictionaries))
-  (reset! pages (virtuoso/get-pages-map pages/pages))
+  (reset! pages (virtuoso/get-pages-map))
   (swap! store assoc ::reloaded-at (.getTime (js/Date.))))
-
-(comment
-  (set! *print-namespace-maps* false)
-)

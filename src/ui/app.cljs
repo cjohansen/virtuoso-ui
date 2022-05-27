@@ -20,17 +20,17 @@
   (when (not-empty href)
     (.replace href js/location.origin "")))
 
-(defn relay-body-clicks [e store element pages]
+(defn relay-body-clicks [element pages store e]
   (let [path (some->> (.-target e) a-element .-href get-path)]
     (when-let [location (some->> path (router/resolve-route pages))]
       (.preventDefault e)
       (if (or e.ctrlKey e.metaKey)
         (.open js/window path "_blank")
-        (navigator/go-to-location store element location)))))
+        (navigator/go-to-location element pages store location)))))
 
-(defn go-to-current-location [store element pages]
+(defn go-to-current-location [element pages store]
   (->> (router/get-current-location (:config @store) pages)
-       (navigator/go-to-location store element)))
+       (navigator/go-to-location element pages store)))
 
 (defn bootup [{:keys [store element event-bus pages] :as app}]
   (let [config (:config @store)]
@@ -50,14 +50,14 @@
                                          (log/debug topic)))))
 
 
-    (set! js/window.onpopstate (fn [] (go-to-current-location store element @pages)))
+    (set! js/window.onpopstate (fn [] (go-to-current-location element @pages store)))
 
-    (js/document.body.addEventListener "click" #(relay-body-clicks % store element @pages))
+    (js/document.body.addEventListener "click" #(relay-body-clicks element @pages store %))
 
     (win/keep-size-up-to-date store)
 
     (add-watch store ::render (fn [_ _ _ state]
                                 (page/render-current-location app state)))
 
-    (go-to-current-location store element @pages)
+    (go-to-current-location element @pages store)
     ))
