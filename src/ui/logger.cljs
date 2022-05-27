@@ -3,8 +3,13 @@
             [clojure.string :as str]
             [taoensso.timbre :as log]))
 
+(defn long-map? [m]
+  (and (map? m)
+       (< 2 (count (keys m)))))
+
 (defn split-log-vargs [vargs]
-  (let [one-line? (some #{:ui.logger/one-line} vargs)
+  (let [one-line? (and (some #{:ui.logger/one-line} vargs)
+                       (not (some long-map? vargs)))
         vargs (remove #{:ui.logger/one-line} vargs)
         ss (take-while string? vargs)]
     (if (seq ss)
