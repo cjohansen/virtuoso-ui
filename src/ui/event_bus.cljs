@@ -31,12 +31,12 @@
   ([subscribers name topic handler]
    (swap! subscribers add-subscriber
           (cond-> {::name name ::handler handler}
-            (not-empty topic) (assoc ::topic topic)))))
+            (not (nil? topic)) (assoc ::topic topic)))))
 
 (defn unsubscribe [subscribers name & [topic]]
   (swap! subscribers remove-subscriber
          (cond-> {::name name}
-           (not-empty topic) (assoc ::topic topic))))
+           (not (nil? topic)) (assoc ::topic topic))))
 
 (defn publish-actions [subscribers actions & xargs]
   (doseq [[topic & args] actions]

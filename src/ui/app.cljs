@@ -1,12 +1,15 @@
 (ns ui.app
-  (:require
-   [taoensso.timbre :as log]
-   [ui.event-bus :as bus]
-   [ui.logger :as logger]
-   [ui.navigator :as navigator]
-   [ui.page :as page]
-   [ui.router :as router]
-   [ui.window :as win]))
+  (:require [dumdom.core :as d]
+            [taoensso.timbre :as log]
+            [ui.actions :as actions]
+            [ui.event-bus :as bus]
+            [ui.logger :as logger]
+            [ui.navigator :as navigator]
+            [ui.page :as page]
+            [ui.router :as router]
+            [ui.window :as win]
+            [clojure.walk :as walk]))
+
 (defn initialize-store [config]
   {:config config
    :locale (:default-locale config :en)})
@@ -35,6 +38,31 @@
   (->> (router/get-current-location (:config @store) pages)
        (navigator/go-to-location element pages store)))
 
+(defn handle-actions [store event-bus e actions]
+  (let [target-val (some-> e .-target .-value)]
+    (->> actions
+         (walk/prewalk
+          #(case %
+             :event/target.value target-val
+             %))
+         (bus/publish-actions event-bus))))
+
+(defn log-action [topic & args]
+  (let [[a b c d e f g h i j] args]
+    (case (count args)
+      10 (log/debug :ui.logger/one-line topic a b c d e f g h i j)
+      9 (log/debug :ui.logger/one-line topic a b c d e f g h i)
+      8 (log/debug :ui.logger/one-line topic a b c d e f g h)
+      7 (log/debug :ui.logger/one-line topic a b c d e f g)
+      6 (log/debug :ui.logger/one-line topic a b c d e f)
+      5 (log/debug :ui.logger/one-line topic a b c d e)
+      4 (log/debug :ui.logger/one-line topic a b c d)
+      3 (log/debug :ui.logger/one-line topic a b c)
+      2 (log/debug :ui.logger/one-line topic a b)
+      1 (log/debug :ui.logger/one-line topic a)
+      0 (log/debug :ui.logger/one-line topic)
+      (log/debug :ui.logger/one-line topic args))))
+
 (defn bootup [{:keys [store element event-bus pages] :as app}]
   (let [config (:config @store)]
     (logger/configure-logging)
@@ -45,11 +73,9 @@
     ;; handle window.onerror
 
     (when (:log-event-bus-messages? config)
-      (bus/subscribe event-bus ::app (fn [topic & args]
-                                       (if args
-                                         (log/debug topic args)
-                                         (log/debug topic)))))
+      (bus/subscribe event-bus ::app log-action))
 
+    (d/set-event-handler! #(apply handle-actions store event-bus %&))
 
     (set! js/window.onpopstate (fn [] (go-to-current-location element @pages store)))
 
@@ -59,6 +85,8 @@
 
     (add-watch store ::render (fn [_ _ _ state]
                                 (page/render-current-location app state)))
+
+    (actions/register-actions store event-bus)
 
     (go-to-current-location element @pages store)
     ))

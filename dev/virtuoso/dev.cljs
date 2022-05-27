@@ -1,6 +1,7 @@
 (ns ^:figwheel-hooks virtuoso.dev
   (:require [dumdom.component]
             [gadget.inspector :as inspector]
+            [ui.actions :as actions]
             [ui.app :as app]
             [ui.event-bus :as bus]
             [virtuoso.i18n :as i18n]
@@ -44,4 +45,5 @@
 (defn ^:after-load refresh []
   (reset! dictionaries (i18n/init-dictionaries))
   (reset! pages (virtuoso/get-pages-map))
-  (swap! store assoc ::reloaded-at (.getTime (js/Date.))))
+  (swap! store assoc ::reloaded-at (.getTime (js/Date.)))
+  (actions/register-actions store event-bus))
