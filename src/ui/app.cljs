@@ -7,6 +7,9 @@
    [ui.page :as page]
    [ui.router :as router]
    [ui.window :as win]))
+(defn initialize-store [config]
+  {:config config
+   :locale (:default-locale config :en)})
 
 (defn- a-element [el]
   (loop [el el]
@@ -37,9 +40,7 @@
     (logger/configure-logging)
     (log/info "Starting app with config" config)
 
-    (swap! store assoc
-           ::bootup-at (.getTime (js/Date.))
-           :locale (:default-locale config :en))
+    (swap! store assoc ::bootup-at (.getTime (js/Date.)))
 
     ;; handle window.onerror
 

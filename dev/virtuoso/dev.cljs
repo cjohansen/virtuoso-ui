@@ -1,12 +1,13 @@
 (ns ^:figwheel-hooks virtuoso.dev
   (:require [dumdom.component]
             [gadget.inspector :as inspector]
+            [ui.app :as app]
             [ui.event-bus :as bus]
             [virtuoso.i18n :as i18n]
             [virtuoso.core :as virtuoso])
   (:require-macros [ui.config.dev :as config]))
 
-(defonce store (atom {:config (config/load-config)}))
+(defonce store (atom (app/initialize-store (config/load-config))))
 (defonce event-bus (bus/create-event-bus))
 (defonce pages (atom (virtuoso/get-pages-map)))
 (defonce dictionaries (atom (i18n/init-dictionaries)))
