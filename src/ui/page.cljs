@@ -6,6 +6,11 @@
             [ui.misc :as misc]
             [ui.time :as time]))
 
+(defn as-location [page]
+  (select-keys page [:location/page-id
+                     :location/query-params
+                     :location/params]))
+
 (defn get-login-page [pages]
   (first (filter :login-page? (vals pages))))
 

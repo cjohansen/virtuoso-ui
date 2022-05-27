@@ -1,8 +1,9 @@
 (ns ui.navigator
-  (:require [ui.authentication :as auth]
-            [ui.router :as router]
-            [taoensso.timbre :as log]
-            [ui.page :as page]))
+  (:require [taoensso.timbre :as log]
+            [ui.authentication :as auth]
+            [ui.misc :as misc]
+            [ui.page :as page]
+            [ui.router :as router]))
 
 (defn location-reachable? [pages state location]
   (let [page (pages (:location/page-id location))]
@@ -18,11 +19,12 @@
       (when (location-reachable? pages state location)
         location)
       (when (auth/authenticated? state)
-        (page/get-default-page pages))
-      (page/get-login-page pages)))
+        (page/as-location (page/get-default-page pages)))
+      (page/as-location (page/get-login-page pages))))
 
 (defn preservable? [page]
-  (not (:authentication-page? page)))
+  (and (not (:authentication-page? page))
+       (not (:login-page? page))))
 
 (defn update-preserved-location! [pages store desired target]
   (when (and (= target desired)
@@ -45,9 +47,10 @@
                   :authenticated? (auth/authenticated? state)
                   :login-page (page/get-login-page pages)
                   :default-page (page/get-default-page pages)}))
-    (log/debug "Desired vs target" {:desired location
-                                    :target target})
     (update-preserved-location! pages store location target)
     (log/info "Updating URL" {:location target})
     (router/update-url (:config state) pages (:current-location state) target)
-    (swap! store assoc :current-location target)))
+    (swap! store (fn [state]
+                   (-> state
+                       (misc/dissoc-in* [:transient (:current-location state)])
+                       (assoc :current-location target))))))
