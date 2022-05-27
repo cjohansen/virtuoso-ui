@@ -10,13 +10,14 @@
    :symbol {:logo/kind :virtuoso/gradient
             :url "/images/virtuoso-greyscale.svg"}
    :text [:i18n/k ::form-text]
-   :input {:placeholder [:i18n/k ::input-label]}
+   :input {:placeholder [:i18n/k ::input-label]
+           :onInput [[:actions/assoc-in [:transient location :email] :event/target.value]]}
    :button {:text [:i18n/k ::button]
             :actions []}})
 
 (def page
   {:location/route ["login"]
-   :location/page-id :virtuoso.pages/login-page
+   :location/page-id :login-page
    :login-page? true
    :page-title ::page-title
    :prepare #'prepare-login-page

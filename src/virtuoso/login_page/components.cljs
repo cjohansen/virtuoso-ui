@@ -1,6 +1,7 @@
 (ns virtuoso.login-page.components
   (:require [dumdom.core :as d]
             [ui.components.button :refer [button]]
+            [ui.components.input :refer [input]]
             [virtuoso.components.logos :as logos]))
 
 (d/defcomponent login-page-component [data]
@@ -21,7 +22,7 @@
      (logos/render (:logo data))]
     [:div.vs-m {:style {:padding "30px 20px 40px"}}
      [:form.vs-s
-      [:div.mod [:input.input (:input data)]]
+      [:div.mod (input (:input data))]
       [:div.mod (button (:button data))]]
      [:p.small.mod (:text data)]]
     [:div {:style {:padding 20
