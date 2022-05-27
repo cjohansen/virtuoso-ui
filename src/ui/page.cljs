@@ -6,6 +6,12 @@
             [ui.misc :as misc]
             [ui.time :as time]))
 
+(defn get-login-page [pages]
+  (first (filter :login-page? (vals pages))))
+
+(defn get-default-page [pages]
+  (first (filter :default-page? (vals pages))))
+
 (defn format-page-title [state title]
   (->> [title (get-in state [:config :site-title])]
        (remove empty?)
@@ -45,11 +51,12 @@
 
 (defn render-location [{:keys [pages dictionaries render-component element]} state location]
   (if-let [{:keys [prepare component] :as page} (get-page @pages location)]
-    (let [render-fn (or render-component (fn [component data] (component data)))]
-      (set-title! @dictionaries state page)
+    (let [render-fn (or render-component (fn [component data] (component data)))
+          dicts @dictionaries]
+      (set-title! dicts state page)
       (d/render
        (->> (prepare (prepare-state state location page) location)
-            (i18n/tr @dictionaries (:locale state))
+            (i18n/tr dicts (:locale state))
             (render-fn component))
        element))
     (log/error "Cannot render location, no page: " {:location location})))
@@ -62,4 +69,5 @@
    30))
 
 (defn render-current-location [app state]
-  (request-render app state (:current-location state)))
+  (when-let [location (:current-location state)]
+    (request-render app state location)))

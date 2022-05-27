@@ -11,14 +11,18 @@
   --cod-gris: #1a1a1a;
   --mine-shaft: #282828;
   --mine-shaft-light: #303030;
+  --silver-chalice: #ababab;
   --mercury: #e6e6e6;
 
   --puits-de-mine: #1c1c1c;
+  --morue-grise-noire: #0a0a0a;
   --morue-grise: #121212;
   --aqua: #22e1ff;
   --bleu-curieux: #1d8fe1;
   --bleu-violet: #625eb1;
+  --indigo: #4077c9;
   --blanc: #fff;
+  --noire: #000;
 
   /* ... */
   --imperial: #552a6a;
@@ -43,9 +47,10 @@
   --fg: var(--blanc);
   --bg: var(--puits-de-mine);
   --default-gradient: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 48%, var(--bleu-violet) 100%);
+  --bg-gradient: linear-gradient(330deg, var(--puits-de-mine) 0%, var(--morue-grise) 45%, var(--morue-grise) 58%, var(--mine-shaft-light) 100%);
 
   --button-color: var(--bleu-curieux);
-  --button-highlight-color: var(--bleu-curieux);
+  --button-highlight-color: var(--indigo);
   --button-engage-color: var(--bleu-violet);
   --button-fg: #ffffff;
   --button-spinner-color: #ffffff;
@@ -63,10 +68,15 @@
   --timer-progress-track: var(--mine-shaft);
 }
 
+@media (min-width: 768px) {
+  :root {
+    --bg-gradient: linear-gradient(320deg, var(--puits-de-mine) 0%, var(--morue-grise-noire) 40%, var(--noire) 60%, var(--mine-shaft-light) 100%);
+  }
+}
+
 html,
 body {
-  background: var(--bg);
-  background-image: var(--default-gradient);
+  background: var(--bg-gradient);
   color: var(--fg);
   font-size: 20px;
   font-weight: normal;
@@ -80,6 +90,22 @@ body {
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.gradient {
+  background-image: var(--default-gradient);
+}
+
+#app {
+  min-height: 100%;
+}
+
+.bg {
+  background: var(--bg);
+}
+
+.small {
+  font-size: 0.75rem;
 }
 
 a,
@@ -143,6 +169,17 @@ a.inverted:visited,
   transform-origin: center center;
 }
 
+/* Headings */
+.h1 {font-size: 2rem;}
+.h2 {font-size: 1.8rem;}
+.h3 {font-size: 1.6rem;}
+.h4 {font-size: 1.4rem;}
+.h5 {font-size: 1.2rem;}
+
+/* Vertical space */
+.vs-s .mod, .vs-m .vs-s .mod {margin: 10px 0;}
+.vs-m .mod {margin: 20px 0;}
+
 /* Buttons */
 
 .button,
@@ -151,16 +188,17 @@ a.inverted:visited,
   --spinner-color-1: var(--button-spinner-color);
   --spinner-color-2: var(--button-spinner-color);
   --spinner-color-3: var(--button-spinner-color);
+  align-items: center;
   background: var(--button-color);
   border: 3px solid var(--button-color);
   color: var(--button-fg);
   cursor: pointer;
   display: flex;
   font-family: inherit;
-  justify-content: center;
-  align-items: center;
   font-weight: normal;
-  padding: 13px 17px;
+  justify-content: center;
+  line-height: 1;
+  padding: 12px 17px;
   position: relative;
   transition: background 0.3s, border-color 0.3s, color 0.3s;
   width: 100%;

@@ -1,4 +1,4 @@
-(ns virtuoso.pages.home-page-components
+(ns virtuoso.home-page.components
   (:require [dumdom.core :as d]))
 
 (d/defcomponent home-page-component [data]

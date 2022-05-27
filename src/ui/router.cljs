@@ -126,7 +126,7 @@
   "Update the browser URL, respecting the `:hash-urls?` config key. Does nothing
   if the target URL is the same as the current URL. Uses replaceState when the
   target shares page-id with the current location."
-  [config pages [target curr]]
+  [config pages curr target]
   (let [url (get-url config pages target)]
     (when-not (= url (or (some->> curr (get-url config pages))
                          (get-current-browser-url config)))
