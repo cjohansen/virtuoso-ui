@@ -38,6 +38,15 @@
          (cond-> {::name name}
            (not (nil? topic)) (assoc ::topic topic))))
 
+(defn subscribe-until
+  "Listens to `event` on the bus until function `f` returns a non-nil value."
+  [subscribers event f]
+  (let [id (keyword (str (random-uuid)))]
+    (subscribe subscribers id event
+               (fn [& args]
+                 (when-not (nil? (apply f args))
+                   (unsubscribe subscribers id event))))))
+
 (defn publish-actions [subscribers actions & xargs]
   (doseq [[topic & args] actions]
     (apply publish subscribers topic (concat args xargs))))

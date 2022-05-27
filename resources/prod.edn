@@ -1,1 +1,4 @@
-{:site-title "Virtuoso"}
+{:site-title "Virtuoso"
+ :query-host ""
+ :command-host ""
+ :git-sha "TODO"}

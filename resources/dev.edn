@@ -1,3 +1,5 @@
 {:query-host ""
+ :command-host "http://localhost:6660"
  :log-event-bus-messages? true
- :site-title "Virtuoso"}
+ :site-title "Virtuoso"
+ :git-sha "HEAD"}
