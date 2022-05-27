@@ -1,6 +1,5 @@
 (ns ui.misc
-  (:require
-   [cljs.core.async :refer [<! alts! chan put! timeout]])
+  (:require [cljs.core.async :refer [<! alts! chan put! timeout]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn debounce
