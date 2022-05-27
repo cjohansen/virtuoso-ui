@@ -1,13 +1,11 @@
 (ns ui.gofer
-  (:require
-   [cljs.core.async :as a]
-   [cljs.tools.reader.edn :as edn]
-   [sse]
-   [taoensso.timbre :as log]
-   [ui.time :as time]
-   [ui.misc :as misc])
-  (:require-macros
-   [cljs.core.async.macros :refer [go]]))
+  (:require [cljs.core.async :as a]
+            [cljs.tools.reader.edn :as edn]
+            [sse]
+            [taoensso.timbre :as log]
+            [ui.time :as time]
+            [ui.misc :as misc])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 ::sse/keep
 
@@ -141,11 +139,13 @@
   (let [complete-ch (a/chan)]
     (try
       (let [state @store
-            sse (js/SSE. (str (-> state :config :api-host) "/api/query")
+            sse (js/SSE. (str (-> state :config :query-host) "/api/query")
                          (clj->js {:payload (pr-str {:requests (mapv #(select-keys % [:path]) sources)})
                                    :headers {"Authorization" (str "Bearer " (:token state))
                                              "Accept" "application/edn"
-                                             "Content-Type" "application/edn"}
+                                             "Content-Type" "application/edn"
+                                             "X-Session-Id" (-> state :session :id)
+                                             "X-Correlation-Id" (str (random-uuid))}
                                    :withCredentials true}))
             path->source (->> sources
                               (map (juxt :path identity))
