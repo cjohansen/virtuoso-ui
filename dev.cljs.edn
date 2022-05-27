@@ -1,6 +1,7 @@
 ^{:watch-dirs ["src" "dev" "devcards"]
   :extra-main-files {:devcards {:main ui.devcards}}
   :ring-server-options {:port 9701}
+  :ring-handler virtuoso.dev-server/handler
   :css-dirs ["dev-resources/public/css"
              "resources/public/css"]}
 {:main virtuoso.dev
