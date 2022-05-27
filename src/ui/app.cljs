@@ -1,5 +1,6 @@
 (ns ui.app
-  (:require [dumdom.core :as d]
+  (:require [clojure.walk :as walk]
+            [dumdom.core :as d]
             [taoensso.timbre :as log]
             [ui.actions :as actions]
             [ui.event-bus :as bus]
@@ -7,8 +8,8 @@
             [ui.navigator :as navigator]
             [ui.page :as page]
             [ui.router :as router]
-            [ui.window :as win]
-            [clojure.walk :as walk]))
+            [ui.session :as session]
+            [ui.window :as win]))
 
 (defn initialize-store [config]
   {:config config
@@ -80,7 +81,9 @@
     (logger/configure-logging)
     (log/info "Starting app with config" config)
 
-    (swap! store assoc ::bootup-at (.getTime (js/Date.)))
+    (swap! store assoc
+           ::bootup-at (.getTime (js/Date.))
+           :session (session/get-session config))
 
     ;; handle window.onerror
 
