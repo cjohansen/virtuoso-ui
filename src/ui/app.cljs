@@ -27,19 +27,20 @@
   (when (not-empty href)
     (.replace href js/location.origin "")))
 
-(defn relay-body-clicks [element pages store e]
+(defn relay-body-clicks [app e]
   (let [path (some->> (.-target e) a-element .-href get-path)]
-    (when-let [location (some->> path (router/resolve-route pages))]
+    (when-let [location (some->> path (router/resolve-route @(:pages app)))]
       (.preventDefault e)
       (if (or e.ctrlKey e.metaKey)
         (.open js/window path "_blank")
-        (navigator/go-to-location element pages store location)))))
+        (navigator/go-to-location app location)))))
 
-(defn go-to-current-location [element pages store]
-  (->> (router/get-current-location (:config @store) pages)
-       (navigator/go-to-location element pages store)))
+(defn go-to-current-location [app]
+  (->> (router/get-current-location (:config @(:store app)) @(:pages app))
+       (navigator/go-to-location app)))
 
 (defn handle-actions [store event-bus e actions]
+  (.preventDefault e)
   (let [target-val (some-> e .-target .-value)]
     (->> actions
          (walk/prewalk
@@ -68,15 +69,15 @@
   "main supports the bootup process. It performs all the bootup tasks that can
   safely be repeated (and that needs to be repeated when code changes). This
   function can be safely called from a reload hook in your development setup."
-  [{:keys [store event-bus pages]}]
-  (actions/register-actions store event-bus)
-  (doseq [register-actions (keep :register-actions (vals @pages))]
-    (register-actions store event-bus)))
+  [app]
+  (actions/register-actions app)
+  (doseq [register-actions (keep :register-actions (vals @(:pages app)))]
+    (register-actions app)))
 
 (defn bootup
   "Perform one-time configuration of app resources and add listeners in
   appropriate places to get the app running"
-  [{:keys [store element event-bus pages] :as app}]
+  [{:keys [store event-bus] :as app}]
   (let [config (:config @store)]
     (logger/configure-logging)
     (log/info "Starting app with config" config)
@@ -92,9 +93,9 @@
 
     (d/set-event-handler! #(apply handle-actions store event-bus %&))
 
-    (set! js/window.onpopstate (fn [] (go-to-current-location element @pages store)))
+    (set! js/window.onpopstate (fn [] (go-to-current-location app)))
 
-    (js/document.body.addEventListener "click" #(relay-body-clicks element @pages store %))
+    (js/document.body.addEventListener "click" #(relay-body-clicks app %))
 
     (win/keep-size-up-to-date store)
 
@@ -103,4 +104,4 @@
 
     (main app)
 
-    (go-to-current-location element @pages store)))
+    (go-to-current-location app)))

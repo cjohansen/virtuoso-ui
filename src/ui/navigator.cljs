@@ -37,8 +37,9 @@
     (swap! store assoc :preserved-location desired))
   nil)
 
-(defn go-to-location [element pages store location]
+(defn go-to-location [{:keys [pages store]} location]
   (let [state @store
+        pages @pages
         target (resolve-target-location pages state location)]
     (when (nil? target)
       (log/error "Navigate has nowhere to go"
