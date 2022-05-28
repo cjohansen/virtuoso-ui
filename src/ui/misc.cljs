@@ -1,5 +1,6 @@
 (ns ui.misc
-  (:require [cljs.core.async :refer [<! alts! chan put! timeout]])
+  (:require [cljs.core.async :refer [<! alts! chan put! timeout]]
+            [ui.event-bus :as bus])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn debounce
@@ -34,3 +35,11 @@
               :else (let [[k & ks] (reverse path)]
                       (update-in m (reverse ks) dissoc k))))
           m args))
+
+(defn swapper [ref f]
+  (fn [& args]
+    (swap! ref #(apply assoc-in* % (apply f % args)))))
+
+(defn event-emitter [event-bus f]
+  (fn [& args]
+    (bus/publish-actions event-bus (apply f args))))
