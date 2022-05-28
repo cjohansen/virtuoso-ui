@@ -21,9 +21,10 @@
     [:div {:style {:padding "40px 30px 0"}}
      (logos/render (:logo data))]
     [:div.vs-m {:style {:padding "30px 20px 40px"}}
-     [:form.vs-s
-      [:div.mod (input (:input data))]
-      [:div.mod (button (:button data))]]
+     [:form.vs-s {:onSubmit (-> data :form :actions)}
+      (for [input-data (-> data :form :inputs)]
+        [:div.mod (input input-data)])
+      [:div.mod (button (-> data :form :button))]]
      [:p.small.mod (:text data)]]
     [:div {:style {:padding 20
                    :max-width 300

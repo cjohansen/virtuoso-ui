@@ -11,4 +11,5 @@
     :title "Logg inn"
     :form-text "Har du ikke konto? Ikke noe stress, vi lager en for deg. Bare skriv inn eposten og trykk på knappen."
     :input-label "Epost-adresse"
+    :otp-label "Engangskode"
     :button "Logg inn"}})

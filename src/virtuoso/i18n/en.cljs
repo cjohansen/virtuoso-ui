@@ -11,4 +11,5 @@
     :title "Login"
     :form-text "Don't have an account? No worries, one will be created for you. Just enter your email and follow along."
     :input-label "Email"
+    :otp-label "One-time code"
     :button "Login"}})
