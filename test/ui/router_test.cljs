@@ -84,4 +84,9 @@
            (->> "/tasks/317/files?tab=pdf"
                 (sut/resolve-route pages)
                 (sut/url-to pages)))
-         "/tasks/317/files?tab=pdf")))
+         "/tasks/317/files?tab=pdf"))
+
+  (is (= (let [pages {:page/home {:location/route []
+                                  :location/page-id :page/home}}]
+           (sut/url-to pages {:location/page-id :page/home}))
+         "/")))

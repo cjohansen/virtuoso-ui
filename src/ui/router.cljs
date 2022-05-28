@@ -97,14 +97,16 @@
   "Given a map of `{location/page-id location}` and a location map, returns a URL
   string."
   [pages location]
-  (let [qs (encode-query-params (:location/query-params location))]
-    (cond-> (->> (get-in pages [(:location/page-id location) :location/route])
+  (let [qs (encode-query-params (:location/query-params location))
+        url (->> (get-in pages [(:location/page-id location) :location/route])
                  (map (fn [p]
                         (if (keyword? p)
                           (get-in location [:location/params p] "[]")
                           p)))
                  (into [""])
-                 (str/join "/"))
+                 (str/join "/"))]
+    (cond-> url
+      (empty? url) (str "/")
       (not-empty qs) (str "?" qs))))
 
 (defn get-current-browser-url
@@ -128,8 +130,7 @@
   target shares page-id with the current location."
   [config pages curr target]
   (let [url (get-url config pages target)]
-    (when-not (= url (or (some->> curr (get-url config pages))
-                         (get-current-browser-url config)))
+    (when-not (= url (get-current-browser-url config))
       (try
         (if (= (:location/page-id target) (:location/page-id curr))
           (.replaceState js/history false false url)
