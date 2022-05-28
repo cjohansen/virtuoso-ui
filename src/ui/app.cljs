@@ -4,6 +4,7 @@
             [taoensso.timbre :as log]
             [ui.actions :as actions]
             [ui.event-bus :as bus]
+            [ui.freezer :as freezer]
             [ui.logger :as logger]
             [ui.navigator :as navigator]
             [ui.page :as page]
@@ -82,9 +83,20 @@
     (logger/configure-logging)
     (log/info "Starting app with config" config)
 
-    (swap! store assoc
-           ::bootup-at (.getTime (js/Date.))
-           :session (session/get-session config))
+    (swap! store merge
+           {:session (session/get-session config)}
+           (freezer/thaw)
+           {::bootup-at (.getTime (js/Date.))})
+
+    (freezer/keep-up-to-date
+     store
+     {:exclude-ks
+      (concat (keys (initialize-store config))
+              [:picard/executions
+               :picard/log
+               :session
+               :transient
+               :ui.app/bootup-at])})
 
     ;; handle window.onerror
 

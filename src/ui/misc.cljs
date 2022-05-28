@@ -3,6 +3,28 @@
             [ui.event-bus :as bus])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
+(defn throttle
+  "Creates a new function that will call function `f` only once every `ms`
+  milliseconds. The very first invocation is done immediately. After that, all
+  subsequent calls but the last are discarded. The last call is then performed
+  once `ms` has passed."
+  [f ms]
+  (let [args-ch (chan)]
+    (go
+      (loop [args (<! args-ch)
+             hold-ch nil]
+        (if (and args (not hold-ch))
+          (do (apply f args)
+              (recur nil (timeout ms)))
+          (let [[value port] (alts! (if hold-ch
+                                      [args-ch hold-ch]
+                                      [args-ch]))]
+            (if (= port args-ch)
+              (recur value hold-ch) ;; new arguments
+              (recur args nil)))))) ;; timed out
+    (fn [& args]
+      (put! args-ch (or args [])))))
+
 (defn debounce
   "Creates a new function that will call function `f` some `ms` milliseconds
   after the last invocation, discarding arguments of all invocations in that

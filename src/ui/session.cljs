@@ -12,9 +12,14 @@
         nil))))
 
 (defn create-session [config]
-  (cond-> {:id (random-uuid)
-           :started-at (time/timestamp)}
-    (:git-sha config) (assoc :git-sha (:git-sha config))))
+  (let [session (cond-> {:id (str (random-uuid))
+                         :started-at (time/timestamp)}
+                  (:git-sha config) (assoc :git-sha (:git-sha config)))]
+    (try
+      (js/sessionStorage.setItem "session" (pr-str session))
+      (catch :default e
+        (log/warn e "Couldn't save session in sessionStorage")))
+    session))
 
 (defn get-session [config]
   (or (load-session)

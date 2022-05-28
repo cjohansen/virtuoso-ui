@@ -49,7 +49,8 @@
                   :login-page (page/get-login-page pages)
                   :default-page (page/get-default-page pages)}))
     (update-preserved-location! pages store location target)
-    (log/info "Updating URL" {:location target})
+    (log/info "Updating URL" {:location target
+                              :current-location (:current-location state)})
     (router/update-url (:config state) pages (:current-location state) target)
     (swap! store (fn [state]
                    (-> state

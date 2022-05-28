@@ -73,7 +73,7 @@
 
 (def page
   {:location/route ["login"]
-   :location/page-id :login-page
+   :location/page-id :virtuoso.pages/login-page
    :login-page? true
    :page-title ::page-title
    :prepare #'prepare-login-page
