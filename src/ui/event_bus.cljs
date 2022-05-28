@@ -23,7 +23,7 @@
 (defn add-subscriber [subscribers subscriber]
   (-> subscribers
       (remove-subscriber subscriber)
-      (conj subscriber)))
+      (concat [subscriber])))
 
 (defn subscribe
   ([subscribers name handler]
