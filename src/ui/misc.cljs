@@ -42,14 +42,39 @@
     (fn [& args]
       (put! c (or args [])))))
 
-(defn assoc-in* [m & args]
+(defn assoc-in*
+  "Takes a map and pairs of path value to assoc-in to the map. Makes `assoc-in`
+  work like `assoc`, e.g.:
+
+  ```clj
+  (assoc-in* {}
+             [:person :name] \"Christian\"
+             [:person :language] \"Clojure\")
+  ;;=>
+  {:person {:name \"Christian\"
+            :language \"Clojure\"}}
+  ```"
+  [m & args]
   (assert (= 0 (mod (count args) 2)) "assoc-in* takes a map and pairs of path value")
   (assert (->> args (partition 2) (map first) (every? vector?)) "each path should be a vector")
   (->> (partition 2 args)
        (reduce (fn [m [path v]]
                  (assoc-in m path v)) m)))
 
-(defn dissoc-in* [m & args]
+(defn dissoc-in*
+  "Takes a map and paths to dissoc from it. An example explains it best:
+
+  ```clj
+  (dissoc-in* {:person {:name \"Christian\"
+                        :language \"Clojure\"}}
+              [:person :language])
+  ;;=>
+  {:person {:name \"Christian\"}}
+  ```
+
+  Optionally pass additional paths.
+  "
+  [m & args]
   (reduce (fn [m path]
             (cond
               (= 0 (count path)) m
@@ -58,10 +83,17 @@
                       (update-in m (reverse ks) dissoc k))))
           m args))
 
-(defn swapper [ref f]
+(defn swapper
+  "Returns a function that when called passes all its arguments to `f` and then
+  performs a `swap!` on `ref` with `assoc-in*` and the return value from the
+  call to `f`."
+  [ref f]
   (fn [& args]
     (swap! ref #(apply assoc-in* % (apply f % args)))))
 
-(defn event-emitter [event-bus f]
+(defn event-emitter
+  "Returns a function that when called passes all its arguments to `f` and then
+  publishes the returned actions on the provided `event-bus`."
+  [event-bus f]
   (fn [& args]
     (bus/publish-actions event-bus (apply f args))))
