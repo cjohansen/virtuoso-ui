@@ -17,10 +17,31 @@
        :data-args (drop-while string? vargs)
        :section-separator "\n"
        :data-separator (if one-line? " " "\n")}
-      {:messages (take-while keyword? vargs)
-       :data-args (drop-while keyword? vargs)
-       :section-separator (if one-line? " " "\n")
-       :data-separator (if one-line? " " "\n")})))
+      (let [messages (take-while keyword? vargs)]
+        {:messages messages
+         :data-args (drop-while keyword? vargs)
+         :section-separator (if one-line? " " "\n")
+         :data-separator (if one-line? " " "\n")}))))
+
+(defn format-log-data [data]
+  (let [{:keys [messages data-args section-separator data-separator]}
+        (split-log-vargs (:vargs data))]
+    (str
+     (->> (concat
+           [(second (str/split (.toISOString (:instant data)) #"T"))
+            (str/upper-case (name (:level data)))
+            (str "[" (:?ns-str data) ":" (:?line data) "]")]
+           messages)
+          (str/join " "))
+     (when-let [args (->> data-args
+                          (map (fn [d]
+                                 (let [formatted (str/trim (with-out-str (pprint/pprint d)))]
+                                   (if (and (= " " data-separator)
+                                            (re-find #"\n" formatted))
+                                     (str "\n" formatted)
+                                     formatted))))
+                          seq)]
+       (str section-separator (str/join data-separator args))))))
 
 (defn configure-logging []
   (log/merge-config!
@@ -29,21 +50,7 @@
     {:console
      {:enabled? true
       :min-level :debug
-      :output-fn (fn [data]
-                   (let [{:keys [messages data-args section-separator data-separator]}
-                         (split-log-vargs (:vargs data))]
-                     (str
-                      (->> (concat
-                            [(second (str/split (.toISOString (:instant data)) #"T"))
-                             (str/upper-case (name (:level data)))
-                             (str "[" (:?ns-str data) ":" (:?line data) "]")]
-                            messages)
-                           (str/join " "))
-                      (when-let [args (->> data-args
-                                           (map (fn [d]
-                                                  (str/trim (with-out-str (pprint/pprint d)))))
-                                           seq)]
-                        (str section-separator (str/join data-separator args))))))
+      :output-fn #'format-log-data
       :fn #(if (:level %)
              (let [output-fn (:output-fn %)
                    formatted (output-fn %)
