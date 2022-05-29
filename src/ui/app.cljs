@@ -3,6 +3,7 @@
             [dumdom.core :as d]
             [taoensso.timbre :as log]
             [ui.actions :as actions]
+            [ui.authentication :as auth]
             [ui.event-bus :as bus]
             [ui.freezer :as freezer]
             [ui.logger :as logger]
@@ -78,7 +79,7 @@
 (defn bootup
   "Perform one-time configuration of app resources and add listeners in
   appropriate places to get the app running"
-  [{:keys [store event-bus] :as app}]
+  [{:keys [store event-bus authenticator] :as app}]
   (let [config (:config @store)]
     (logger/configure-logging)
     (log/info "Starting app with config" config)
@@ -116,4 +117,7 @@
 
     (main app)
 
-    (go-to-current-location app)))
+    (go-to-current-location app)
+
+    ;; Refresh token if necessary
+    (auth/<ensure-authenticated! authenticator app)))

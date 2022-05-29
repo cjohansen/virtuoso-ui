@@ -1,5 +1,6 @@
 (ns virtuoso.login-page.page
   (:require [clojure.string :as str]
+            [ui.authentication :as auth]
             [ui.event-bus :as bus]
             [ui.misc :as misc]
             [ui.picard :as picard]
@@ -42,13 +43,13 @@
                     :disabled? (or (not valid?) in-progress?)
                     :spinner? in-progress?
                     :actions (when valid?
-                               [[:actions/command :login/authenticate email otp]])})
+                               [[:actions/public-command :login/authenticate email otp]])})
                  (let [valid? (valid-email? email)]
                    {:text [:i18n/k ::button]
                     :disabled? (or (not valid?) in-progress?)
                     :spinner? in-progress?
                     :actions (when valid?
-                               [[:actions/command :login/request-otp email (:locale state)]])}))})))
+                               [[:actions/public-command :login/request-otp email (:locale state)]])}))})))
 
 (defn prepare-login-page [state location]
   {:title [:i18n/k ::title]
@@ -61,15 +62,26 @@
    :text [:i18n/k ::form-text]
    :form (prepare-login-form state location (get-in state [:transient location]))})
 
-(defn complete-login [state {:keys [data]}]
-  [[:actions/assoc-in [:token] (:token data)]
-   [:actions/go-to-location {:location/page-id :virtuoso.pages/home-page}]])
+(defn complete-authentication [state {:keys [data]}]
+  (let [{:keys [claims]} (auth/decode-jwt (:token data))]
+    [[:actions/assoc-in
+      [:token] (:token data)
+      [:token-info] claims]]))
+
+(defn complete-login [state res]
+  (concat (complete-authentication state res)
+          [[:actions/go-to-location {:location/page-id :virtuoso.pages/home-page}]]))
 
 (defn register-actions [{:keys [store event-bus]}]
   (bus/subscribe
    event-bus ::actions
    [::picard/complete-execution :login/authenticate]
-   (misc/event-emitter event-bus #(apply complete-login @store %&))))
+   (misc/event-emitter event-bus #(apply complete-login @store %&)))
+
+  (bus/subscribe
+   event-bus ::actions
+   [::picard/complete-execution :login/refresh-token]
+   (misc/event-emitter event-bus #(apply complete-authentication @store %&))))
 
 (def page
   {:location/route ["login"]

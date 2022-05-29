@@ -105,40 +105,42 @@
                   (chanel/close! ch)))))))
     ch))
 
-(defn execute-command! [store event-bus [identifier :as command]]
+(defn execute-command! [store event-bus opt [identifier :as command]]
   (let [start-time (js/Date.)]
     (swap! store assoc-in [:picard/executions identifier] {:status :in-progress
                                                            :started-at start-time
                                                            :command command})
-    (go (let [response (<! (let [state @store]
-                             (request
-                              {:method :post
-                               :url (str (-> state :config :command-host) "/api/command")
-                               :headers {"X-Session-Id" (-> state :session :id)
-                                         "X-Correlation-Id" (str (random-uuid))
-                                         "Accept" "application/edn"}
-                               :token (:token state)
-                               :edn-params {:command command}})))
-              result (if (:status (:body response))
-                       (:body response)
-                       {:status :error :result :invalid-http-response})]
-          (swap! store (fn [state]
-                         (let [completed-at (js/Date.)]
-                           (-> state
-                               (assoc-in [:picard/executions identifier]
-                                         (assoc result
-                                                :command command
-                                                :started-at start-time
-                                                :completed-at completed-at))
-                               (update-in [:picard/log identifier]
-                                          #(take 5 (cons [(:status result) completed-at] %)))))))
-          (bus/publish event-bus [::complete-execution identifier] result)))))
+    (go
+      (let [response (<! (let [state (cond-> @store
+                                       (not (:include-token? opt)) (dissoc :token))]
+                           (request
+                            {:method :post
+                             :url (str (-> state :config :command-host) "/api/command")
+                             :headers {"X-Session-Id" (-> state :session :id)
+                                       "X-Correlation-Id" (str (random-uuid))
+                                       "Accept" "application/edn"}
+                             :token (:token state)
+                             :edn-params {:command command}})))
+            result (if (:status (:body response))
+                     (:body response)
+                     {:status :error :result :invalid-http-response})]
+        (swap! store (fn [state]
+                       (let [completed-at (js/Date.)]
+                         (-> state
+                             (assoc-in [:picard/executions identifier]
+                                       (assoc result
+                                              :command command
+                                              :started-at start-time
+                                              :completed-at completed-at))
+                             (update-in [:picard/log identifier]
+                                        #(take 5 (cons [(:status result) completed-at] %)))))))
+        (bus/publish event-bus [::complete-execution identifier] result)))))
 
-(defn <command! [store event-bus [identifier :as command]]
+(defn <command! [store event-bus opt [identifier :as command]]
   (let [return-ch (chanel/chan [::command identifier])]
     (if (in-progress? @store identifier)
       (log/warn "Duplicate command, already in progress, waiting for original" command)
-      (execute-command! store event-bus command))
+      (execute-command! store event-bus opt command))
     (bus/subscribe-until
      event-bus
      [::complete-execution identifier]

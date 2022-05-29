@@ -29,7 +29,8 @@
    :element (js/document.getElementById "app")
    :pages pages
    :event-bus event-bus
-   :render-component #'render-component})
+   :render-component #'render-component
+   :authenticator (virtuoso/->TokenAuthenticator)})
 
 (defonce started
   (do
