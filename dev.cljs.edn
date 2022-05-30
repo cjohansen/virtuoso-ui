@@ -1,4 +1,4 @@
-^{:watch-dirs ["src" "dev" "devcards"]
+^{:watch-dirs ["src" "dev" "devcards" "test"]
   :extra-main-files {:devcards {:main ui.devcards}}
   :ring-server-options {:port 9701}
   :ring-handler virtuoso.dev-server/handler

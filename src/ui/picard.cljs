@@ -43,10 +43,10 @@
                  [:failure #inst \"2022\"])}}
   ```"
   (:require [cljs.core.async :refer [<! put!]]
-            [cljs.tools.reader.edn :as edn]
             [taoensso.timbre :as log]
             [ui.chanel :as chanel]
-            [ui.event-bus :as bus])
+            [ui.event-bus :as bus]
+            [ui.http :as http])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn get-execution [state identifier]
@@ -71,40 +71,6 @@
   (when-let [execution (get-execution state identifier)]
     (- (:now state) (:started-at execution))))
 
-(defn get-fetch-params [req]
-  (cond-> (dissoc req :token :url :edn-params)
-    (:token req) (assoc-in [:headers "Authorization"] (str "Bearer " (:token req)))
-    (:token req) (assoc :credentials "same-origin")
-    (:edn-params req) (assoc-in [:headers "Content-Type"] "application/edn")
-    (:edn-params req) (assoc :body (pr-str (:edn-params req)))))
-
-(defn parse-response-body [res body]
-  (or
-   (when (re-find #"\bedn\b" (.get (.-headers res) "content-type"))
-     (try
-       (edn/read-string body)
-       (catch :default e
-         nil)))
-   body))
-
-(defn request [req]
-  (let [ch (chanel/chan ::fetch)]
-    (-> (js/fetch (:url req) (clj->js (get-fetch-params req)))
-        (.then
-         (fn [res]
-           (-> (.text res)
-               (.then
-                (fn [body]
-                  (put! ch {:status (.-status res)
-                            :headers (->> (.-headers res)
-                                          .keys
-                                          (map (fn [k]
-                                                 [k (.get (.-headers res) k)]))
-                                          (into {}))
-                            :body (parse-response-body res body)})
-                  (chanel/close! ch)))))))
-    ch))
-
 (defn execute-command! [store event-bus opt [identifier :as command]]
   (let [start-time (js/Date.)]
     (swap! store assoc-in [:picard/executions identifier] {:status :in-progress
@@ -113,7 +79,7 @@
     (go
       (let [response (<! (let [state (cond-> @store
                                        (not (:include-token? opt)) (dissoc :token))]
-                           (request
+                           (http/request
                             {:method :post
                              :url (str (-> state :config :command-host) "/api/command")
                              :headers {"X-Session-Id" (-> state :session :id)

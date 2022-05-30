@@ -54,15 +54,19 @@
     (map? (:gofer assoc))
     (update :gofer #(apply select-keys % (get-required-data state location page)))))
 
+(defn prepare-page-data [state location dicts page]
+  (when-let [prepare (:prepare page)]
+    (->> (prepare (prepare-state state location page) location)
+         (i18n/tr dicts (:locale state)))))
+
 (defn render-location [{:keys [pages dictionaries render-component element]} state location]
-  (if-let [{:keys [prepare component] :as page} (get-page @pages location)]
+  (if-let [page (get-page @pages location)]
     (let [render-fn (or render-component (fn [component data] (component data)))
           dicts @dictionaries]
       (set-title! dicts state page)
       (d/render
-       (->> (prepare (prepare-state state location page) location)
-            (i18n/tr dicts (:locale state))
-            (render-fn component))
+       (->> (prepare-page-data state location dicts page)
+            (render-fn (:component page)))
        element))
     (log/error "Cannot render location, no page: " {:location location})))
 

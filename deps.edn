@@ -7,6 +7,7 @@
  {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}
                      cider/piggieback {:mvn/version "0.5.3"}
                      cjohansen/gadget-inspector {:mvn/version "0.2020.09.10"}
-                     devcards {:mvn/version "0.2.6"}
+                     devcards/devcards {:mvn/version "0.2.6"}
+                     flare/flare {:mvn/version "0.3.0-SNAPSHOT"}
                      net.clojars.cjohansen/dumdom-devcards {:mvn/version "2021.06.14"}}
-        :extra-paths ["dev" "dev-resources" "devcards"]}}}
+        :extra-paths ["dev" "dev-resources" "devcards" "test"]}}}

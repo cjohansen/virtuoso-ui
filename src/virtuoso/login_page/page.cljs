@@ -25,8 +25,9 @@
 
 (defn prepare-login-form [state location {:keys [email otp]}]
   (let [requested-otp? (requested-otp? state email)
-        in-progress? (or (picard/in-progress? state :login/request-otp)
-                         (picard/in-progress? state :login/authenticate))]
+        in-progress? (boolean
+                      (or (picard/in-progress? state :login/request-otp)
+                          (picard/in-progress? state :login/authenticate)))]
     (with-form-action
       {:inputs (->> [{:placeholder [:i18n/k ::input-label]
                       :disabled in-progress?
