@@ -4,14 +4,14 @@ body .com-rigsomelight-devcards-card-base,
 body .com-rigsomelight-devcards-card-base-no-pad {
   background: transparent;
   color: var(--mercury);
-  border-color: var(--woodsmoke);
+  border-color: var(--fumee-de-bois);
 }
 
-body .com-rigsomelight-devcards-panel-heading {background: var(--mine-shaft);}
-body .com-rigsomelight-devcards-badge {background: var(--woodsmoke);}
-body .com-rigsomelight-devcards-list-group-item {border-color: var(--woodsmoke);}
-html, body, body .com-rigsomelight-devcards-breadcrumbs {background: var(--mine-shaft-light);}
-body .com-rigsomelight-devcards-typog a {color: var(--curious-azul);}
+body .com-rigsomelight-devcards-panel-heading {background: var(--puits-de-mine);}
+body .com-rigsomelight-devcards-badge {background: var(--fumee-de-bois);}
+body .com-rigsomelight-devcards-list-group-item {border-color: var(--fumee-de-bois);}
+html, body, body .com-rigsomelight-devcards-breadcrumbs {background: var(--puits-de-mine);}
+body .com-rigsomelight-devcards-typog a {color: var(--bleu-cagnard-20);}
 
 body .com-rigsomelight-devcards-container {width: auto;}
 

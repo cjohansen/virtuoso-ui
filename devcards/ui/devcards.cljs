@@ -3,7 +3,8 @@
             [ui.components.button-cards]
             [ui.components.input-cards]
             [ui.components.spinner-cards]
-            [ui.components.timer-cards]))
+            [ui.components.timer-cards]
+            [virtuoso.components.brain-cards]))
 
 (enable-console-print!)
 
