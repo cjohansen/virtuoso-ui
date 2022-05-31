@@ -2,7 +2,7 @@
   (:require [dumdom.core :as d]
             [ui.components.button :refer [button]]
             [ui.components.input :refer [input]]
-            [virtuoso.components.logos :as logos]))
+            [virtuoso.components.brain :as brain]))
 
 (d/defcomponent login-page-component [data]
   [:div {:style {:position "absolute"
@@ -15,11 +15,10 @@
    [:div {:style {:display "flex"
                   :flex-direction "column"
                   :flex-grow 1
-                  :justify-content "space-between"
-                  :max-width 600
+                  :max-width 500
                   :margin "0 auto"}}
-    [:div {:style {:padding "40px 30px 0"}}
-     (logos/render (:logo data))]
+    [:div {:style {:padding "40px 20px 0"}}
+     (brain/brain {:id "logo"})]
     [:div.vs-m {:style {:padding "30px 20px 40px"}}
      [:form.vs-s {:onSubmit (-> data :form :actions)}
       (for [input-data (-> data :form :inputs)]
@@ -28,5 +27,4 @@
      [:p.small.mod (:text data)]]
     [:div {:style {:padding 20
                    :max-width 300
-                   :margin "0 auto"}}
-     (logos/render (:symbol data))]]])
+                   :margin "0 auto"}}]]])

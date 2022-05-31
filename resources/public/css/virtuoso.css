@@ -7,70 +7,59 @@
 }
 
 :root {
-  --woodsmoke: #18181a;
-  --cod-gris: #1a1a1a;
-  --mine-shaft: #282828;
-  --mine-shaft-light: #303030;
+  --noire: #000;
+  --morue-grise-10: #0a0a0a;
+  --morue-grise-20: #121212;
+  --morue-grise-30: #1c1c1c;
+  --fumee-de-bois: #18181a;
+  --puits-de-mine: #303030;
+  --scorpion: #606060;
   --silver-chalice: #ababab;
   --mercury: #e6e6e6;
-
-  --puits-de-mine: #1c1c1c;
-  --morue-grise-noire: #0a0a0a;
-  --morue-grise: #121212;
-  --aqua: #22e1ff;
-  --bleu-curieux: #1d8fe1;
-  --bleu-violet: #625eb1;
-  --indigo: #4077c9;
+  --galerie: #f0f0f0;
   --blanc: #fff;
-  --noire: #000;
 
-  /* ... */
-  --imperial: #552a6a;
-  --amaranth: #e83369;
-  --brick-rojo: #cd2d5d;
-  --mexican-rojo: #992245;
-  --west-side: #ff8f0f;
-  --deep-lemon: #ffca1c;
-  --dandelion: #ffda61;
-  --lima: #54cc2c;
-  --wafer: #dfcec2;
-  --flint: #736e69;
-  --cloud-burst: #1e2f4e;
-  --cinnabar: #e54d42;
-  --blizzard: #b7e6f2;
-  --curious-azul: #3a99d9;
-  --fun-azul: #1369a3;
-  --scorpion: #606060;
-  --silver-chalice: #a6a6a6;
-  /* ... */
+  --violet-electrique: #db00ff;
+  --bleu-cagnard-10: #13a3fc;
+  --bleu-cagnard-20: #247bfd;
+  --ruban-bleu: #3750ff;
+  --picton-bleu: #4ea8f4;
+  --turquoise-vif: #00cefa;
 
   --fg: var(--blanc);
   --bg: var(--puits-de-mine);
-  --default-gradient: linear-gradient(-225deg, var(--aqua) 0%, var(--bleu-curieux) 48%, var(--bleu-violet) 100%);
-  --bg-gradient: linear-gradient(330deg, var(--puits-de-mine) 0%, var(--morue-grise) 45%, var(--morue-grise) 58%, var(--mine-shaft-light) 100%);
+  --default-gradient: linear-gradient(-225deg, var(--violet-electrique) 0%, var(--ruban-bleu) 48%, var(--turquoise-vif) 100%);
+  --bg-gradient: linear-gradient(330deg, var(--morue-grise-30) 0%, var(--morue-grise-20) 45%, var(--morue-grise-20) 58%, var(--puits-de-mine) 100%);
 
-  --button-color: var(--bleu-curieux);
-  --button-highlight-color: var(--indigo);
-  --button-engage-color: var(--bleu-violet);
-  --button-fg: #ffffff;
-  --button-spinner-color: #ffffff;
+  /* Theme colors */
 
-  --input-bg: var(--cod-gris);
+  --brain-text: var(--galerie);
+  --brain-gradient1: var(--violet-electrique);
+  --brain-gradient2: var(--ruban-bleu);
+  --brain-gradient3: var(--turquoise-vif);
+
+  --button-color: var(--ruban-bleu);
+  --button-highlight-color: var(--bleu-cagnard-20);
+  --button-engage-color: var(--bleu-cagnard-10);
+  --button-fg: var(--blanc);
+  --button-spinner-color: var(--blanc);
+
+  --input-bg: var(--morue-grise-30);
   --input-fg: var(--silver-chalice);
   --input-focus-fg: var(--mercury);
-  --input-focus-outline: var(--aqua);
+  --input-focus-outline: var(--turquoise-vif);
   --input-placeholder: var(--scorpion);
 
-  --spinner-color-1: var(--aqua);
-  --spinner-color-2: var(--bleu-curieux);
-  --spinner-color-3: var(--bleu-violet);
+  --spinner-color-1: var(--violet-electrique);
+  --spinner-color-2: var(--ruban-bleu);
+  --spinner-color-3: var(--turquoise-vif);
 
-  --timer-progress-track: var(--mine-shaft);
+  --timer-progress-track: var(--morue-grise-30);
 }
 
 @media (min-width: 768px) {
   :root {
-    --bg-gradient: linear-gradient(320deg, var(--puits-de-mine) 0%, var(--morue-grise-noire) 40%, var(--noire) 60%, var(--mine-shaft-light) 100%);
+    --bg-gradient: linear-gradient(320deg, var(--morue-grise-30) 0%, var(--morue-grise-10) 40%, var(--noire) 60%, var(--puits-de-mine) 100%);
   }
 }
 
