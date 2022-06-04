@@ -44,6 +44,11 @@
   --button-fg: var(--blanc);
   --button-spinner-color: var(--blanc);
 
+  --icon-button: var(--silver-chalice);
+  --icon-button-hover: var(--galerie);
+  --icon-button-highlight: var(--galerie);
+  --icon-button-highlight-hover: var(--turquoise-vif);
+
   --input-bg: var(--morue-grise-30);
   --input-fg: var(--silver-chalice);
   --input-focus-fg: var(--mercury);
@@ -282,5 +287,26 @@ a.button:hover {
 .timer-progress-line {
   background-image: var(--default-gradient);
   transition: width 1s linear;
+}
+
+/* Icons */
+.svg {display: block;}
+
+/* Icon buttons */
+.icon-button {
+  color: var(--icon-button);
+  transition: color 0.25s ease-in;
+}
+
+.icon-button:hover {
+  color: var(--icon-button-hover);
+}
+
+.icon-button-highlight {
+  color: var(--icon-button-highlight);
+}
+
+.icon-button-highlight:hover {
+  color: var(--icon-button-highlight-hover);
 }
 
