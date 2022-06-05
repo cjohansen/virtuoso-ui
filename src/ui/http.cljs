@@ -12,7 +12,7 @@
 
 (defn parse-response-body [res body]
   (or
-   (when (re-find #"\bedn\b" (.get (.-headers res) "content-type"))
+   (when (re-find #"\bedn\b" (or (.get (.-headers res) "content-type") ""))
      (try
        (edn/read-string body)
        (catch :default e

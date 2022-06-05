@@ -24,16 +24,17 @@
       nil)))
 
 (defn decode-jwt [token]
-  ;; JWT uses base64Url encoding, which uses - for + and _ for /
-  ;; JavaScript does not understand base64Url, but we can replace those
-  ;; characters before decoding.
-  (let [[header claims sig] (-> token
-                                (str/replace #"\-" "+")
-                                (str/replace #"_" "/")
-                                (str/split #"\."))]
-    {:header (decode-safely header)
-     :claims (decode-safely claims)
-     :sig sig}))
+  (when (string? token)
+    ;; JWT uses base64Url encoding, which uses - for + and _ for /
+    ;; JavaScript does not understand base64Url, but we can replace those
+    ;; characters before decoding.
+    (let [[header claims sig] (-> token
+                                  (str/replace #"\-" "+")
+                                  (str/replace #"_" "/")
+                                  (str/split #"\."))]
+      {:header (decode-safely header)
+       :claims (decode-safely claims)
+       :sig sig})))
 
 (defn token-expired? [{:keys [exp]} & [now]]
   (let [now (or now (time/timestamp))]

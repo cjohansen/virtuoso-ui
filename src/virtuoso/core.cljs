@@ -17,7 +17,8 @@
   (<ensure-authenticated! [_ {:keys [store event-bus]}]
     (go
       (let [{:keys [token token-info]} @store]
-        (when (auth/token-expired? token-info (+ (time/timestamp) token-expiry-buffer))
+        (when (and token
+                   (auth/token-expired? token-info (+ (time/timestamp) token-expiry-buffer)))
           (log/info "Token expired, attempting refresh")
           (<! (picard/<command! store event-bus {} [:login/refresh-token token])))))))
 
