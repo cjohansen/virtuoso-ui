@@ -1,9 +1,12 @@
 (ns ui.navigator
-  (:require [taoensso.timbre :as log]
+  (:require [cljs.core.async :refer [<!]]
+            [taoensso.timbre :as log]
             [ui.authentication :as auth]
+            [ui.gofer :as gofer]
             [ui.misc :as misc]
             [ui.page :as page]
-            [ui.router :as router]))
+            [ui.router :as router])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn location-reachable? [pages state location]
   (let [page (pages (:location/page-id location))]
@@ -37,7 +40,38 @@
     (swap! store assoc :preserved-location desired))
   nil)
 
-(defn go-to-location [{:keys [pages store]} location]
+(defn notify-page-on-data [page state location message]
+  (try
+    (when-let [f (:on-required-data page)]
+      (f state location message))
+    (catch :default e
+      (log/error e "Failed to notify page about new data"
+                 {:location location
+                  :page page
+                  :message message}))))
+
+(defn fetch-data-for-location [{:keys [store authenticator] :as app} page location]
+  (let [f (or (:required-data-fn page)
+              (constantly (:required-data page)))]
+    (go
+      (<! (auth/<ensure-authenticated! authenticator app))
+      (when (:token @store)
+        (loop [fetched #{}]
+          (let [required-data (remove fetched (f @store location))]
+            (when (seq required-data)
+              (let [ch (gofer/fetch store required-data)]
+                (recur
+                 (into
+                  fetched
+                  (loop [paths []]
+                    (if-let [message (<! ch)]
+                      (do
+                        (when (:success? message)
+                          (notify-page-on-data page @store location message))
+                        (recur (conj paths (:path message))))
+                      paths))))))))))))
+
+(defn go-to-location [{:keys [pages store] :as app} location]
   (let [state @store
         pages @pages
         target (resolve-target-location pages state location)]
@@ -55,4 +89,5 @@
     (swap! store (fn [state]
                    (-> state
                        (misc/dissoc-in* [:transient (:current-location state)])
-                       (assoc :current-location target))))))
+                       (assoc :current-location target))))
+    (fetch-data-for-location app (get pages (:location/page-id target)) target)))

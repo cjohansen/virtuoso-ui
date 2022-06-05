@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [ui.authentication :as auth]
             [ui.event-bus :as bus]
+            [ui.freezer :as freezer]
             [ui.misc :as misc]
             [ui.picard :as picard]
             [virtuoso.login-page.components :refer [login-page-component]]))
@@ -63,15 +64,19 @@
    :text [:i18n/k ::form-text]
    :form (prepare-login-form state location (get-in state [:transient location]))})
 
-(defn complete-authentication [state {:keys [data]}]
-  (let [{:keys [claims]} (auth/decode-jwt (:token data))]
-    [[:actions/assoc-in
-      [:token] (:token data)
-      [:token-info] claims]]))
+(defn complete-authentication [state {:keys [status data]}]
+  (if (= status :success)
+    (let [{:keys [claims]} (auth/decode-jwt (:token data))]
+      [[:actions/assoc-in
+        [:token] (:token data)
+        [:token-info] claims]])
+    (do
+      (freezer/empty!)
+      (set! js/window.location.href "/"))))
 
 (defn complete-login [state res]
   (concat (complete-authentication state res)
-          [[:actions/go-to-location {:location/page-id :virtuoso.pages/home-page}]]))
+          [[:actions/go-to-location {:location/page-id :virtuos.pages/home-page}]]))
 
 (defn register-actions [{:keys [store event-bus]}]
   (bus/subscribe

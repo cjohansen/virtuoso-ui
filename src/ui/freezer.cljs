@@ -32,6 +32,9 @@
       (catch :default e
         (log/error e "Failed to thaw freezer" s)))))
 
+(defn empty! []
+  (js/localStorage.removeItem "app-state"))
+
 (defn keep-up-to-date [store & [opt]]
   (let [calm-freeze (throttle (debounce freeze 1000) 5000)]
     (add-watch store ::freezer (fn [_ _ _ new-state]

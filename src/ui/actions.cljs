@@ -10,7 +10,8 @@
 (defn command! [{:keys [store authenticator event-bus] :as app} opt command]
   (go
     (<! (auth/<ensure-authenticated! authenticator app))
-    (picard/<command! store event-bus opt command)))
+    (when (:token @store)
+      (picard/<command! store event-bus opt command))))
 
 (defn register-actions [{:keys [store event-bus] :as app}]
   (let [subs (partial bus/subscribe event-bus ::action)]
