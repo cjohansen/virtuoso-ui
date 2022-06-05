@@ -1,4 +1,4 @@
-{:site-title "Virtuoso"
+{:command-host ""
+ :log-event-bus-messages? false
  :query-host ""
- :command-host ""
- :git-sha "TODO"}
+ :site-title "Virtuoso"}

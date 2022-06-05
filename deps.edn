@@ -10,4 +10,7 @@
                      devcards/devcards {:mvn/version "0.2.6"}
                      flare/flare {:mvn/version "0.3.0-SNAPSHOT"}
                      net.clojars.cjohansen/dumdom-devcards {:mvn/version "2021.06.14"}}
-        :extra-paths ["dev" "dev-resources" "devcards" "test"]}}}
+        :extra-paths ["dev" "dev-resources" "devcards" "test"]}
+  :build {:extra-paths ["build" "prod"]
+          :extra-deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}
+                       optimus/optimus {:mvn/version "2022-02-13"}}}}}

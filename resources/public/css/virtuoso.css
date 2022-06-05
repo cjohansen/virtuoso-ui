@@ -1,3 +1,4 @@
+@import url(reset.css);
 @import url(fonts.css);
 
 *,
@@ -32,6 +33,8 @@
   --bg-gradient: linear-gradient(330deg, var(--morue-grise-30) 0%, var(--morue-grise-20) 45%, var(--morue-grise-20) 58%, var(--puits-de-mine) 100%);
 
   /* Theme colors */
+
+  --theme-color: var(--fumee-de-bois);
 
   --brain-text: var(--galerie);
   --brain-gradient1: var(--violet-electrique);
